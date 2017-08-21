@@ -67,6 +67,7 @@ class ViewController: UIViewController, CAPSPageMenuDelegate {
         
         // Optional delegate 
         pageMenu!.delegate = self
+        pageMenu!.gestureDelegate = self
         
         self.view.addSubview(pageMenu!.view)
     }

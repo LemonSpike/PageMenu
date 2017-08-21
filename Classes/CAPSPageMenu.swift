@@ -24,6 +24,11 @@ import UIKit
 
     @objc optional func willMoveToPage(_ controller: UIViewController, index: Int)
     @objc optional func didMoveToPage(_ controller: UIViewController, index: Int)
+  
+}
+
+@objc public protocol CustomGestureDelegate {
+  func gestureRecognizerShouldRecognizeSimultaneouslyWith(_ gestureRecognizer: UIGestureRecognizer, otherGestureRecognizer: UIGestureRecognizer) -> Bool
 }
 
 open class CAPSPageMenu: UIViewController {
@@ -34,8 +39,8 @@ open class CAPSPageMenu: UIViewController {
     // MARK: - Properties
 
     let menuScrollView = UIScrollView()
-    let controllerScrollView = UIScrollView()
-    var controllerArray : [UIViewController] = []
+    let controllerScrollView = CustomScrollView()
+    public var controllerArray : [UIViewController] = []
     var menuItems : [MenuItemView] = []
     var menuItemWidths : [CGFloat] = []
     
@@ -64,6 +69,8 @@ open class CAPSPageMenu: UIViewController {
 
     open weak var delegate : CAPSPageMenuDelegate?
 
+    open weak var gestureDelegate: CustomGestureDelegate?
+  
     var tapTimer : Timer?
 
     enum CAPSPageMenuScrollDirection : Int {

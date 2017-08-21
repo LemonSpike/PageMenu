@@ -9,10 +9,13 @@
 import UIKit
 import PageMenu
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, CustomGestureDelegate, CAPSPageMenuDelegate {
     
     var pageMenu : CAPSPageMenu?
-    
+    let tableView = UITableView()
+  
+    var controllerArray : [UIViewController] = []
+  
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -28,11 +31,12 @@ class ViewController: UIViewController {
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "<-", style: UIBarButtonItemStyle.done, target: self, action: #selector(ViewController.didTapGoToLeft))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "->", style: UIBarButtonItemStyle.done, target: self, action: #selector(ViewController.didTapGoToRight))
-        
+      
+        tableView.isScrollEnabled = false
+      
         // MARK: - Scroll menu setup
         
         // Initialize view controllers to display and place in array
-        var controllerArray : [UIViewController] = []
         
         let controller1 : TestTableViewController = TestTableViewController(nibName: "TestTableViewController", bundle: nil)
         controller1.title = "FRIENDS"
@@ -62,6 +66,9 @@ class ViewController: UIViewController {
         // Initialize scroll menu
         pageMenu = CAPSPageMenu(viewControllers: controllerArray, frame: CGRect(x: 0.0, y: 0.0, width: self.view.frame.width, height: self.view.frame.height), pageMenuOptions: parameters)
 
+      pageMenu!.delegate = self
+      pageMenu?.gestureDelegate = self
+      
 		self.addChildViewController(pageMenu!)
         self.view.addSubview(pageMenu!.view)
 		
@@ -94,6 +101,14 @@ class ViewController: UIViewController {
 	override func shouldAutomaticallyForwardRotationMethods() -> Bool {
 		return true
 	}
+  
+  func gestureRecognizerShouldRecognizeSimultaneouslyWith(_ gestureRecognizer: UIGestureRecognizer, otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    if pageMenu?.currentPageIndex == 0 {
+      return (controllerArray[0] as! CustomGestureDelegate).gestureRecognizerShouldRecognizeSimultaneouslyWith(gestureRecognizer, otherGestureRecognizer: otherGestureRecognizer)
+    }
+    return true
+  }
+  
 }
 
 
